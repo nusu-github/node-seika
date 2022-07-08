@@ -41,8 +41,9 @@
     "edge-js": "^18.4.0"
   },
   "scripts": {
-    "install": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc --project tsconfig.json",
+    "postinstall": "tsc --project tsconfig.json",
+    "test": "node ./dist/test.js"
   },
   "type": "module"
 }

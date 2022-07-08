@@ -2,7 +2,7 @@ import { performance } from "perf_hooks";
 
 import { z } from "zod";
 
-import { Util, Validates } from "../util.js";
+import { Util } from "../util.js";
 
 import type { SeikaSay2_interface } from "../type/type";
 

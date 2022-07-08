@@ -42,7 +42,6 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "postinstall": "tsc --project tsconfig.json",
     "test": "node ./dist/test.js"
   },
   "type": "module"

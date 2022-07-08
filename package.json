@@ -1,0 +1,44 @@
+{
+  "name": "node-seika",
+  "description": "",
+  "version": "1.0.0",
+  "author": "",
+  "dependencies": {
+    "ajv": "^8.11.0",
+    "async": "^3.2.4",
+    "execa": "^6.1.0",
+    "got": "^12.1.0",
+    "iconv-lite": "^0.6.3",
+    "zod": "^3.17.3"
+  },
+  "devDependencies": {
+    "@tsconfig/node16-strictest-esm": "1.0.3",
+    "@types/async": "3.2.14",
+    "@types/node": "18.0.0",
+    "@typescript-eslint/eslint-plugin": "5.30.0",
+    "@typescript-eslint/parser": "5.30.0",
+    "eslint": "8.18.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-airbnb-typescript": "17.0.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-import": "2.26.0",
+    "prettier": "2.7.1",
+    "typescript": "4.7.4"
+  },
+  "engines": {
+    "node": ">= 16"
+  },
+  "exports": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "license": "Apache-2.0",
+  "optionalDependencies": {
+    "edge-js": "^18.4.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module"
+}

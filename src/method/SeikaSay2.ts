@@ -2,21 +2,19 @@ import { performance } from "perf_hooks";
 
 import { z } from "zod";
 
-import { Util } from "../util.js";
+import { Util, Validates } from "../util.js";
 
-import type {
-  Details,
-  Param,
-  ParamType,
-  SeikaSay2_interface,
-  SpeakerList,
-} from "../type/type";
+import type { SeikaSay2_interface } from "../type/type";
 
 export default class SeikaSay2 implements SeikaSay2_interface {
   private readonly exe_path;
 
   constructor(exe_path: string) {
-    this.exe_path = exe_path;
+    this.exe_path = z
+      .string()
+      .min(1)
+      .regex(/^.*SeikaSay2\.exe$/)
+      .parse(exe_path);
   }
 
   /*
@@ -36,12 +34,20 @@ export default class SeikaSay2 implements SeikaSay2_interface {
           .split("/")
       )
       .sort();
-    if (!ver_std) throw new Error("");
-    return ver_std;
+    return z
+      .array(
+        z.tuple([
+          z.string().min(4),
+          z.string().min(1),
+          z.string().min(1),
+          z.enum(["64", "32"]),
+        ])
+      )
+      .parse(ver_std);
   }
 
   private static param_parser(stdout: string) {
-    const param_list = new Map<ParamType, Map<string, Map<string, number>>>();
+    const param_list = new Map<string, Map<string, Map<string, number>>>();
     const ver_std = SeikaSay2.stdout_parser(stdout)
       .filter((a) => a.match(/^(effect|emotion).+$/))
       .map((a) =>
@@ -55,10 +61,7 @@ export default class SeikaSay2 implements SeikaSay2_interface {
       );
 
     ver_std.forEach(([type, name, value, _decimal, range]) => {
-      const param_type = z
-        .string()
-        .regex(/"effect" | "emotion"/)
-        .parse(type) as ParamType;
+      const param_type = z.enum(["effect", "emotion"]).parse(type);
       const [min, max, step] = z
         .string()
         .transform((a) => a.split(/～|, step /).map((b) => Number(b)))
@@ -91,7 +94,7 @@ export default class SeikaSay2 implements SeikaSay2_interface {
       .parse(ver_std[0]);
   }
 
-  public async AvatorList(): Promise<SpeakerList> {
+  public async AvatorList() {
     const avator_list = new Map<number, string>();
 
     const stdout = await this.gen_func(["-list"]);
@@ -110,12 +113,16 @@ export default class SeikaSay2 implements SeikaSay2_interface {
     return avator_list;
   }
 
+  private async gen_func(arg: string[]) {
+    return Util.gen_func(this.exe_path, arg);
+  }
+
   /*
    * ~~~ public ~~~
    */
 
-  public async AvatorList2(): Promise<SpeakerList> {
-    const avator_list = new Map<number, Details>();
+  public async AvatorList2() {
+    const avator_list = new Map<number, Map<string, string>>();
 
     const stdout = await this.gen_func(["-list"]);
     const ver_std = SeikaSay2.list_parser(stdout);
@@ -137,9 +144,9 @@ export default class SeikaSay2 implements SeikaSay2_interface {
     return avator_list;
   }
 
-  public async AvatorListDetail2(): Promise<SpeakerList> {
+  public async AvatorListDetail2() {
     const tmp: string[] = [];
-    const avator_list = new Map<number, Details>();
+    const avator_list = new Map<number, Map<string, string>>();
 
     const stdout = await this.gen_func(["-list"]);
     const ver_std = SeikaSay2.list_parser(stdout);
@@ -171,12 +178,12 @@ export default class SeikaSay2 implements SeikaSay2_interface {
     return avator_list;
   }
 
-  public async GetDefaultParams2(cid: number): Promise<Param> {
+  public async GetDefaultParams2(cid: number) {
     const stdout = await this.gen_func(["-cid", String(cid), "-params"]);
     return SeikaSay2.param_parser(stdout);
   }
 
-  public async GetCurrentParams2(cid: number): Promise<Param> {
+  public async GetCurrentParams2(cid: number) {
     const stdout = await this.gen_func(["-cid", String(cid), "-current"]);
     return SeikaSay2.param_parser(stdout);
   }
@@ -189,7 +196,7 @@ export default class SeikaSay2 implements SeikaSay2_interface {
       effects?: [string, number][];
       emotions?: [string, number][];
     } = {}
-  ): Promise<number> {
+  ) {
     const { filepath = "", effects = [], emotions = [] } = option;
     const arg = ["-cid", String(cid)];
     return this.execute_talk(talktext, arg, filepath, effects, emotions);
@@ -199,14 +206,10 @@ export default class SeikaSay2 implements SeikaSay2_interface {
     cid: number,
     talktext: string | string[],
     option: { effects?: [string, number][]; emotions?: [string, number][] } = {}
-  ): Promise<number> {
+  ) {
     const { effects = [], emotions = [] } = option;
     const arg = ["-cid", String(cid), "-async"];
     return this.execute_talk(talktext, arg, "", effects, emotions);
-  }
-
-  private async gen_func(arg: string[]) {
-    return Util.gen_func(this.exe_path, arg);
   }
 
   private async execute_talk(

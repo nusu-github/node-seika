@@ -1,7 +1,3 @@
-type Details = Map<string, string>;
-export type SpeakerList = Map<number, string | Details>;
-type Param = Map<string, Map<string, Map<string, number>>>;
-
 /**
  *
  * WCFClient.dll用インターフェイス
@@ -109,7 +105,7 @@ export interface WCFClient_interface {
  *
  */
 
-interface SeikaSay2_interface {
+export interface SeikaSay2_interface {
   /**
    * AssistantSeikaバージョン取得
    * @return {Promise<string>} バージョン文字列
@@ -198,7 +194,7 @@ interface SeikaSay2_interface {
  *
  */
 
-interface HTTP_interface {
+export interface HTTP_interface {
   /**
    * AssistantSeikaバージョン取得
    * @return {Promise<string>} バージョン文字列

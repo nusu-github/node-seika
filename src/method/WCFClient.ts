@@ -4,7 +4,6 @@ import { promisify } from "node:util";
 import edge from "edge-js";
 import { z } from "zod";
 
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Validates } from "../util.js";
 
 import type { WCFClient_interface } from "../type/type";
@@ -27,8 +26,8 @@ export default class WCFClient implements WCFClient_interface {
     this.dll_path = dll_path;
 
     /*
-                              C#コンパイル
-                             */
+      C#コンパイル
+    */
     this.func_list = {
       Version: this.gen_func("Version"),
       ProductScan: this.gen_func("ProductScan"),

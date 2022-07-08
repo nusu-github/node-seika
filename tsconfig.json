@@ -6,9 +6,8 @@
     "module": "esnext",
     "resolveJsonModule": true,
     "outDir": "./dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "noImplicitAny": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

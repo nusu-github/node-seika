@@ -5,14 +5,7 @@ import { z } from "zod";
 
 import { Validates } from "../util.js";
 
-import type { Effect, Json_Param, ParamData } from "../type/Json";
-import type {
-  Details,
-  HTTP_interface,
-  Param,
-  ParamType,
-  SpeakerList,
-} from "../type/type";
+import type { HTTP_interface } from "../type/type";
 import type { OptionsInit } from "got";
 
 export default class HTTP implements HTTP_interface {
@@ -34,37 +27,44 @@ export default class HTTP implements HTTP_interface {
    * ~~~ private ~~~
    */
 
-  private static param_parser(data: Json_Param) {
-    const param_list = new Map<ParamType, Map<string, Map<string, number>>>();
-    Object.entries(data).forEach(([type, params]) => {
-      Object.entries(<Effect | Record<string, ParamData>>params).forEach(
-        ([name, value]) => {
-          const a = param_list.get(<"effect" | "emotion">type) ?? new Map();
+  private param_parser(data: unknown) {
+    const param_list = new Map<string, Map<string, Map<string, number>>>();
+    Object.entries(this.validates.GetDefaultParams2_http.parse(data)).forEach(
+      ([type, params]) => {
+        Object.entries(params).forEach(([name, value]) => {
+          const a = param_list.get(type) ?? new Map();
           a.set(name, new Map(Object.entries(value)));
-          param_list.set(<"effect" | "emotion">type, a);
-        }
-      );
-    });
+          param_list.set(type, a);
+        });
+      }
+    );
     return param_list;
   }
 
-  public async Version(): Promise<string> {
-    const url = new URL("/VERSION", this.url);
-    const data = await got.get(url, this.gen_option());
-    if (!this.validates.Version(data)) throw new Error();
-    return data.version;
+  private gen_option(): OptionsInit {
+    return {
+      username: this.id,
+      password: this.password,
+      resolveBodyOnly: true,
+      responseType: "json",
+    };
   }
 
   /*
    * ~~~ public ~~~
    */
 
-  public async AvatorList(): Promise<SpeakerList> {
+  public async Version() {
+    const url = new URL("/VERSION", this.url);
+    const data = await got.get(url, this.gen_option());
+    return this.validates.Version_http.parse(data).version;
+  }
+
+  public async AvatorList() {
     const avator_list = new Map<number, string>();
     const url = new URL("/AVATOR2", this.url);
     const data = await got.get(url, this.gen_option());
-    if (!this.validates.AVATORLISTDETAIL2(data)) throw new Error();
-    data
+    this.validates.AvatorListDetail2_http.parse(data)
       .sort((a, b) => (a.cid < b.cid ? -1 : 1))
       .forEach(({ cid, name, prod }) => {
         avator_list.set(cid, name.replace(new RegExp(`_${prod}.+`), ""));
@@ -72,12 +72,11 @@ export default class HTTP implements HTTP_interface {
     return avator_list;
   }
 
-  public async AvatorList2(): Promise<SpeakerList> {
-    const avator_list = new Map<number, Details>();
+  public async AvatorList2() {
+    const avator_list = new Map<number, Map<string, string>>();
     const url = new URL("/AVATOR2", this.url);
     const data = await got.get(url, this.gen_option());
-    if (!this.validates.AVATORLISTDETAIL2(data)) throw new Error();
-    data
+    this.validates.AvatorListDetail2_http.parse(data)
       .sort((a, b) => (a.cid < b.cid ? -1 : 1))
       .forEach(({ cid, name, prod, platform }) => {
         avator_list.set(
@@ -92,12 +91,11 @@ export default class HTTP implements HTTP_interface {
     return avator_list;
   }
 
-  public async AvatorListDetail2(): Promise<SpeakerList> {
-    const avator_list = new Map<number, Details>();
+  public async AvatorListDetail2() {
+    const avator_list = new Map<number, Map<string, string>>();
     const url = new URL("/AVATOR2", this.url);
     const data = await got.get(url, this.gen_option());
-    if (!this.validates.AVATORLISTDETAIL2(data)) throw new Error();
-    data
+    this.validates.AvatorListDetail2_http.parse(data)
       .sort((a, b) => (a.cid < b.cid ? -1 : 1))
       .forEach(({ cid, name, prod, platform, isalias }) => {
         avator_list.set(
@@ -113,18 +111,16 @@ export default class HTTP implements HTTP_interface {
     return avator_list;
   }
 
-  public async GetDefaultParams2(cid: number): Promise<Param> {
+  public async GetDefaultParams2(cid: number) {
     const url = new URL(`/AVATOR2/${cid}`, this.url);
     const data = await got.get(url, this.gen_option());
-    if (!this.validates.Param(data)) throw new Error();
-    return HTTP.param_parser(data);
+    return this.param_parser(this.validates.GetDefaultParams2_http.parse(data));
   }
 
-  public async GetCurrentParams2(cid: number): Promise<Param> {
+  public async GetCurrentParams2(cid: number) {
     const url = new URL(`/AVATOR2/${cid}/current`, this.url);
     const data = await got.get(url, this.gen_option());
-    if (!this.validates.Param(data)) throw new Error();
-    return HTTP.param_parser(data);
+    return this.param_parser(this.validates.GetDefaultParams2_http.parse(data));
   }
 
   public async Talk(
@@ -135,7 +131,7 @@ export default class HTTP implements HTTP_interface {
       effects?: [string, number][];
       emotions?: [string, number][];
     } = {}
-  ): Promise<number> {
+  ) {
     const { filepath = "", effects = [], emotions = [] } = option;
     const url = (() => {
       if (filepath) return new URL(`/SAVE2/${cid}`, this.url);
@@ -161,7 +157,7 @@ export default class HTTP implements HTTP_interface {
     cid: number,
     talktext: string | string[],
     option: { effects?: [string, number][]; emotions?: [string, number][] } = {}
-  ): Promise<number> {
+  ) {
     const { effects = [], emotions = [] } = option;
     const url = new URL(`/PLAYASYNC2/${cid}`, this.url);
     const req_option = this.gen_option();
@@ -174,14 +170,5 @@ export default class HTTP implements HTTP_interface {
     const data = await got.post(url, req_option);
     if (!Buffer.isBuffer(data)) throw new Error();
     return data.readInt8();
-  }
-
-  private gen_option(): OptionsInit {
-    return {
-      username: this.id,
-      password: this.password,
-      resolveBodyOnly: true,
-      responseType: "json",
-    };
   }
 }

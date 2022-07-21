@@ -9,13 +9,6 @@ import { Validates } from "../util.js";
 import type { WCFClient_interface } from "../type/type";
 
 export default class WCFClient implements WCFClient_interface {
-  private static readonly project_dirname = path.resolve("./");
-
-  private static readonly AssistantSeika_wrapper = path.join(
-    this.project_dirname,
-    "src"
-  );
-
   private readonly dll_path;
 
   private readonly func_list;
@@ -26,8 +19,8 @@ export default class WCFClient implements WCFClient_interface {
     this.dll_path = dll_path;
 
     /*
-      C#コンパイル
-    */
+            C#コンパイル
+        */
     this.func_list = {
       Version: this.gen_func("Version"),
       ProductScan: this.gen_func("ProductScan"),
@@ -45,6 +38,20 @@ export default class WCFClient implements WCFClient_interface {
   /*
    * ~~~ private ~~~
    */
+
+  private gen_func(methodName: string) {
+    return promisify(
+      edge.func({
+        source: path.join("./src/", "main.csx"),
+        methodName,
+        references: [
+          this.dll_path,
+          "System.Runtime.Serialization.dll",
+          "System.Xml.dll",
+        ],
+      })
+    );
+  }
 
   /*
    * ~~~ public ~~~
@@ -157,20 +164,6 @@ export default class WCFClient implements WCFClient_interface {
           emotions,
         })
       )
-    );
-  }
-
-  private gen_func(methodName: string) {
-    return promisify(
-      edge.func({
-        source: path.join(WCFClient.AssistantSeika_wrapper, "main.csx"),
-        methodName,
-        references: [
-          this.dll_path,
-          "System.Runtime.Serialization.dll",
-          "System.Xml.dll",
-        ],
-      })
     );
   }
 }

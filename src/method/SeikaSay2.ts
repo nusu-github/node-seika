@@ -21,8 +21,8 @@ export default class SeikaSay2 implements SeikaSay2_interface {
    * ~~~ private ~~~
    */
 
-  private static stdout_parser(stdout: string) {
-    return stdout.split(/\r\n|\n/).map((a) => a.trim());
+  private static stdout_parser(a: string) {
+    return a.split(/\r\n|\n/).map((b) => b.trim());
   }
 
   private static list_parser(stdout: string) {
@@ -64,8 +64,9 @@ export default class SeikaSay2 implements SeikaSay2_interface {
       const param_type = z.enum(["effect", "emotion"]).parse(type);
       const [min, max, step] = z
         .string()
-        .transform((a) => a.split(/～|, step /).map((b) => Number(b)))
-        .parse(range);
+        .parse(range)
+        .split(/～|, step /)
+        .map((b) => Number(b));
       const data = param_list.get(param_type) ?? new Map();
 
       data.set(

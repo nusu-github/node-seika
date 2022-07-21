@@ -42,6 +42,7 @@
     "edge-js": "^18.4.0"
   },
   "scripts": {
+    "postinstall": "tsc",
     "build": "tsc --project tsconfig.json",
     "test": "node ./dist/test.js"
   },

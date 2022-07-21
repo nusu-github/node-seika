@@ -1,15 +1,17 @@
 import path from "node:path";
 import { promisify } from "node:util";
+import * as url from "url";
 import edge from "edge-js";
 import { z } from "zod";
 import { Validates } from "../util.js";
 export default class WCFClient {
     constructor(dll_path) {
+        this.project_path = path.join(url.fileURLToPath(new URL(".", import.meta.url)), "../../");
         this.validates = new Validates();
         this.dll_path = dll_path;
         /*
-                C#コンパイル
-            */
+         *  C#コンパイル
+         */
         this.func_list = {
             Version: this.gen_func("Version"),
             ProductScan: this.gen_func("ProductScan"),
@@ -28,7 +30,7 @@ export default class WCFClient {
      */
     gen_func(methodName) {
         return promisify(edge.func({
-            source: path.join("./src/", "main.csx"),
+            source: path.join(this.project_path, "./src/main.csx"),
             methodName,
             references: [
                 this.dll_path,

@@ -1,5 +1,6 @@
 import path from "node:path";
 import { promisify } from "node:util";
+import * as url from "url";
 
 import edge from "edge-js";
 import { z } from "zod";
@@ -9,6 +10,11 @@ import { Validates } from "../util.js";
 import type { WCFClient_interface } from "../type/type";
 
 export default class WCFClient implements WCFClient_interface {
+  private readonly project_path = path.join(
+    url.fileURLToPath(new URL(".", import.meta.url)),
+    "../../"
+  );
+
   private readonly dll_path;
 
   private readonly func_list;
@@ -19,8 +25,8 @@ export default class WCFClient implements WCFClient_interface {
     this.dll_path = dll_path;
 
     /*
-            C#コンパイル
-        */
+     *  C#コンパイル
+     */
     this.func_list = {
       Version: this.gen_func("Version"),
       ProductScan: this.gen_func("ProductScan"),
@@ -42,7 +48,7 @@ export default class WCFClient implements WCFClient_interface {
   private gen_func(methodName: string) {
     return promisify(
       edge.func({
-        source: path.join("./src/", "main.csx"),
+        source: path.join(this.project_path, "./src/main.csx"),
         methodName,
         references: [
           this.dll_path,

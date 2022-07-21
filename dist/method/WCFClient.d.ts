@@ -1,5 +1,6 @@
 import type { WCFClient_interface } from "../type/type";
 export default class WCFClient implements WCFClient_interface {
+    private readonly project_path;
     private readonly dll_path;
     private readonly func_list;
     private readonly validates;

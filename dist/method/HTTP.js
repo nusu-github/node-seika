@@ -16,9 +16,15 @@ export default class HTTP {
         const param_list = new Map();
         Object.entries(this.validates.GetDefaultParams2_http.parse(data)).forEach(([type, params]) => {
             Object.entries(params).forEach(([name, value]) => {
-                const a = param_list.get(type) ?? new Map();
-                a.set(name, new Map(Object.entries(value)));
-                param_list.set(type, a);
+                const a = param_list.get(type);
+                const b = new Map(Object.entries(value));
+                if (a) {
+                    a.set(name, b);
+                    param_list.set(type, a);
+                }
+                else {
+                    param_list.set(type, new Map([[name, b]]));
+                }
             });
         });
         return param_list;

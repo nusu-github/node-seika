@@ -32,9 +32,14 @@ export default class HTTP implements HTTP_interface {
     Object.entries(this.validates.GetDefaultParams2_http.parse(data)).forEach(
       ([type, params]) => {
         Object.entries(params).forEach(([name, value]) => {
-          const a = param_list.get(type) ?? new Map();
-          a.set(name, new Map(Object.entries(value)));
-          param_list.set(type, a);
+          const a = param_list.get(type);
+          const b: Map<string, number> = new Map(Object.entries(value));
+          if (a) {
+            a.set(name, b);
+            param_list.set(type, a);
+          } else {
+            param_list.set(type, new Map([[name, b]]));
+          }
         });
       }
     );

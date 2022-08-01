@@ -334,7 +334,4 @@ export declare class Validates {
         }[];
     }>]>, "many">;
 }
-export declare class Util {
-    static gen_func(exe_path: string, arg: string[]): Promise<string>;
-}
 //# sourceMappingURL=util.d.ts.map

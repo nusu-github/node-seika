@@ -8,6 +8,9 @@ export default class WCFClient {
     constructor(dll_path) {
         this.project_path = path.join(url.fileURLToPath(new URL(".", import.meta.url)), "../../");
         this.validates = new Validates();
+        if (!z.literal("WCFClient.dll").safeParse(path.basename(dll_path)).success) {
+            throw new Error("[バリデーション エラー] パスが不正です");
+        }
         this.dll_path = dll_path;
         /*
          *  C#コンパイル

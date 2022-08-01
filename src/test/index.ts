@@ -3,13 +3,9 @@ import path from "node:path";
 import { performance } from "node:perf_hooks";
 import os from "os";
 
-import { each } from "async";
+import { z } from "zod";
 
-import NodeSeika from "../index.js";
-
-import type HTTP from "../method/HTTP";
-import type SeikaSay2 from "../method/SeikaSay2.js";
-import type WCFClient from "../method/WCFClient.js";
+import { WCFClient, SeikaSay2, HTTP } from "../index.js";
 
 const test = async (client: WCFClient | SeikaSay2 | HTTP) => {
   const tmp_path = await fs.mkdtemp(path.join(os.tmpdir(), "NodeSeika-"));
@@ -28,17 +24,17 @@ const test = async (client: WCFClient | SeikaSay2 | HTTP) => {
   console.log(`話者一覧`);
   console.table(avatar2_detail_list);
 
-  await each(avatar_list.entries(), async ([cid]) => {
+  for (const [cid] of avatar_list.entries()) {
     const param = await client.GetDefaultParams2(cid);
     console.log(`デフォルトパラメーター`);
     console.table(param);
-  });
+  }
 
-  await each(avatar_list.entries(), async ([cid]) => {
+  for (const [cid] of avatar_list.entries()) {
     const param = await client.GetCurrentParams2(cid);
     console.log(`現在のパラメーター`);
     console.table(param);
-  });
+  }
 
   const string_list = (
     await fs.readFile(
@@ -55,46 +51,49 @@ const test = async (client: WCFClient | SeikaSay2 | HTTP) => {
     .split(/\r\n|\n|\r/)
     .map((a) => a.trim().replace(/^\w+:(\S+),\S+$/, "$1"));
 
-  await each(
-    [...avatar_list.entries()].map(
-      ([cid, name]): [[number, string, string], Promise<number>] => {
-        const data =
-          string_list[Math.floor(Math.random() * (string_list.length - 1))]!;
-        return [
-          [cid, name as string, data],
-          client.Talk(cid, data, {
-            filepath: `${tmp_path}/${cid}_${data}.wav`,
-          }),
-        ];
-      }
-    ),
-    async ([avatar_data, func_Talk]) => {
-      const [cid, name, data] = avatar_data;
-      await func_Talk;
-      console.log(`${name}(${cid}) ${data}`);
-    }
-  );
+  for (const [cid, name] of avatar_list.entries()) {
+    const data = z
+      .string()
+      .parse(string_list[Math.floor(Math.random() * (string_list.length - 1))]);
+    await client.Talk(cid, data, {
+      filepath: `${tmp_path}/${cid}_${data}.wav`,
+    });
+    console.log(`${name}(${cid}) ${data}`);
+  }
 };
 
 const main = async () => {
-  const seikasay2 = <SeikaSay2>await NodeSeika({ access_method: "SeikaSay2" });
-  const wcfclient = <WCFClient>await NodeSeika({ access_method: "WCFClient" });
-  const http = <HTTP>await NodeSeika({ access_method: "HTTP" });
-
   const wcfclient_startTime = performance.now();
+  const wcfclient = new WCFClient("./AssistantSeika/WCFClient/WCFClient.dll");
   await test(wcfclient);
   const wcfclient_endTime = performance.now();
-  console.log("wcfclient", wcfclient_endTime - wcfclient_startTime);
 
   const seikasay2_startTime = performance.now();
+  const seikasay2 = new SeikaSay2("./AssistantSeika/SeikaSay2/SeikaSay2.exe");
   await test(seikasay2);
   const seikasay2_endTime = performance.now();
-  console.log("seikasay2", seikasay2_endTime - seikasay2_startTime);
 
   const http_startTime = performance.now();
+  const http = new HTTP(
+    "http://localhost:7180/",
+    "SeikaServerUser",
+    "SeikaServerPassword"
+  );
   await test(http);
   const http_endTime = performance.now();
-  console.log("http", http_startTime - http_endTime);
+
+  console.log(
+    "total",
+    wcfclient_endTime -
+      wcfclient_startTime +
+      seikasay2_endTime -
+      seikasay2_startTime +
+      http_endTime -
+      http_startTime
+  );
+  console.log("wcfclient", wcfclient_endTime - wcfclient_startTime);
+  console.log("seikasay2", seikasay2_endTime - seikasay2_startTime);
+  console.log("http", http_endTime - http_startTime);
 };
 
 await main();

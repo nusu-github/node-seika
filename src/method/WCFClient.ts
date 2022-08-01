@@ -22,6 +22,12 @@ export default class WCFClient implements WCFClient_interface {
   private readonly validates = new Validates();
 
   constructor(dll_path: string) {
+    if (
+      !z.literal("WCFClient.dll").safeParse(path.basename(dll_path)).success
+    ) {
+      throw new Error("[バリデーション エラー] パスが不正です");
+    }
+
     this.dll_path = dll_path;
 
     /*

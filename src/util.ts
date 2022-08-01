@@ -1,5 +1,3 @@
-import { execa } from "execa";
-import iconv from "iconv-lite";
 import { z } from "zod";
 
 export class Validates {
@@ -98,17 +96,4 @@ export class Validates {
   });
 
   public readonly GetCurrentParams2 = this.GetDefaultParams2;
-}
-
-export class Util {
-  public static async gen_func(exe_path: string, arg: string[]) {
-    const { decode } = iconv;
-    const data = await execa(exe_path, arg, {
-      encoding: null,
-    });
-    const stderr = decode(data.stderr, "Windows-31j");
-    const stdout = decode(data.stdout, "Windows-31j");
-    if (stderr) throw new Error(stderr);
-    return stdout;
-  }
 }

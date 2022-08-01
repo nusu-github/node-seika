@@ -1,8 +1,8 @@
 import { performance } from "perf_hooks";
 
+import { execa } from "execa";
+import iconv from "iconv-lite";
 import { z } from "zod";
-
-import { Util } from "../util.js";
 
 import type { SeikaSay2_interface } from "../type/type";
 
@@ -67,18 +67,21 @@ export default class SeikaSay2 implements SeikaSay2_interface {
         .parse(range)
         .split(/～|, step /)
         .map((b) => Number(b));
-      const data = param_list.get(param_type) ?? new Map();
 
-      data.set(
-        name,
-        new Map([
-          ["value", Number(value)],
-          ["min", min],
-          ["max", max],
-          ["step", step],
-        ])
-      );
-      param_list.set(param_type, data);
+      const data = param_list.get(param_type);
+      const b = new Map([
+        ["value", z.number().parse(Number(value))],
+        ["min", z.number().parse(min)],
+        ["max", z.number().parse(max)],
+        ["step", z.number().parse(step)],
+      ]);
+
+      if (data) {
+        data.set(z.string().parse(name), b);
+        param_list.set(param_type, data);
+      } else {
+        param_list.set(param_type, new Map([[z.string().parse(name), b]]));
+      }
     });
 
     return param_list;
@@ -115,7 +118,14 @@ export default class SeikaSay2 implements SeikaSay2_interface {
   }
 
   private async gen_func(arg: string[]) {
-    return Util.gen_func(this.exe_path, arg);
+    const { decode } = iconv;
+    const data = await execa(this.exe_path, arg, {
+      encoding: null,
+    });
+    const stderr = decode(data.stderr, "Windows-31j");
+    const stdout = decode(data.stdout, "Windows-31j");
+    if (stderr) throw new Error(stderr);
+    return stdout;
   }
 
   /*

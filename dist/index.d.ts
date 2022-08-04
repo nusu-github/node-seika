@@ -1,5 +1,4 @@
-import HTTP from "./method/HTTP.js";
-import SeikaSay2 from "./method/SeikaSay2.js";
-import WCFClient from "./method/WCFClient.js";
-export { HTTP, SeikaSay2, WCFClient };
+export { default as Http } from "./method/http.js";
+export { default as Wcfclient } from "./method/wcfclient.js";
+export { default as Seikasay2 } from "./method/seikasay2.js";
 //# sourceMappingURL=index.d.ts.map

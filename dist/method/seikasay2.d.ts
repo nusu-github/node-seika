@@ -1,12 +1,9 @@
-import type { HTTP_interface } from "../type/type";
-export default class HTTP implements HTTP_interface {
-    private readonly url;
-    private readonly id;
-    private readonly password;
-    private readonly validates;
-    constructor(url: string, id: string, password: string);
-    private param_parser;
-    private gen_option;
+export default class Seikasay2 {
+    private readonly exe_path;
+    constructor(exe_path: string);
+    private static stdout_parser;
+    private static list_parser;
+    private static param_parser;
     Version(): Promise<string>;
     AvatorList(): Promise<Map<number, string>>;
     AvatorList2(): Promise<Map<number, Map<string, string>>>;
@@ -15,12 +12,14 @@ export default class HTTP implements HTTP_interface {
     GetCurrentParams2(cid: number): Promise<Map<string, Map<string, Map<string, number>>>>;
     Talk(cid: number, talktext: string | string[], option?: {
         filepath?: string;
-        effects?: [string, number][];
-        emotions?: [string, number][];
+        effects?: Array<[string, number]>;
+        emotions?: Array<[string, number]>;
     }): Promise<number>;
     TalkAsync(cid: number, talktext: string | string[], option?: {
-        effects?: [string, number][];
-        emotions?: [string, number][];
+        effects?: Array<[string, number]>;
+        emotions?: Array<[string, number]>;
     }): Promise<number>;
+    private execute_talk;
+    private gen_func;
 }
-//# sourceMappingURL=HTTP.d.ts.map
+//# sourceMappingURL=seikasay2.d.ts.map

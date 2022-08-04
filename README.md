@@ -16,11 +16,11 @@ npm install nusu-github/node-seika
 ```javascript
 import NodeSeika from "node-seika"
 
-const client = new SeikaSay2("./SeikaSay2.exe")
+const client = new Seikasay2("./SeikaSay2.exe")
 
-const client = new WCFClient("./WCFClient.dll")
+const client = new Wcfclient("./WCFClient.dll")
 
-const client = new HTTP("http://localhost:7180/", "SeikaServerUser", "SeikaServerPassword",)
+const client = new Http("http://localhost:7180/", "SeikaServerUser", "SeikaServerPassword",)
 
 // 全ての関数は非同期関数です。呼び出しにはawaitを必ずつけてください。
 const ver = await client.Version()
@@ -28,15 +28,6 @@ console.log(ver)
 ```
 
 ### 対応アクセス方法
-
-- SeikaSay2
-    - SeikaSay2.exeを使用
-    - メリット
-        - 初期化が早い
-        - ほぼ確実に実行できる
-    - デメリット
-        - CPU使用率が高い
-
 
 - WCFClient
     - WCFClient.dllを使用
@@ -48,6 +39,15 @@ console.log(ver)
         - 初期化が遅い
 
 
+- SeikaSay2
+    - SeikaSay2.exeを使用
+    - メリット
+        - 初期化が早い
+        - ほぼ確実に実行できる
+    - デメリット
+        - CPU使用率が高い
+
+
 - HTTP
     - HTTP機能を使用
     - メリット
@@ -56,8 +56,8 @@ console.log(ver)
         - 実行が早い
     - デメリット
         - 一度に多くのリクエストでタイムアウトする
+        - ほかの方法に比べて操作が多い
 
 ## 使用ライブラリ
 
 - [AssistantSeika](https://hgotoh.jp/wiki/doku.php/documents/voiceroid/assistantseika/assistantseika-000)
-- [ita-corpus](https://github.com/mmorise/ita-corpus) (読み上げのテスト用に使用しています)

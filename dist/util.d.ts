@@ -79,15 +79,15 @@ export declare class Validates {
         platform: z.ZodString;
         prod: z.ZodString;
     }, "strip", z.ZodTypeAny, {
+        name: string;
         cid: number;
         isalias: boolean;
-        name: string;
         platform: string;
         prod: string;
     }, {
+        name: string;
         cid: number;
         isalias: boolean;
-        name: string;
         platform: string;
         prod: string;
     }>, "many">;

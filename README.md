@@ -18,7 +18,7 @@ import NodeSeika from "node-seika"
 
 const client = new Seikasay2("./SeikaSay2.exe")
 
-const client = new Wcfclient("./WCFClient.dll")
+const client = new Wcfclient()
 
 const client = new Http("http://localhost:7180/", "SeikaServerUser", "SeikaServerPassword",)
 
@@ -30,13 +30,12 @@ console.log(ver)
 ### 対応アクセス方法
 
 - WCFClient
-    - WCFClient.dllを使用
-    - node-seikaのデフォルト
+    - WCFインタフェースを使用
     - メリット
-        - 実行が早い
+        - すぐ使える (exeやdllを用意する必要がない)
         - CPU使用率が低い
     - デメリット
-        - 初期化が遅い
+        - 若干遅い (2~3割程度)
 
 
 - SeikaSay2
@@ -46,17 +45,18 @@ console.log(ver)
         - ほぼ確実に実行できる
     - デメリット
         - CPU使用率が高い
+        - 最も遅い (2倍程度)
 
 
 - HTTP
     - HTTP機能を使用
     - メリット
-        - 依存ライブラリが無い (exeやdllを必要としない)
+        - すぐ使える (exeやdllを用意する必要がない)
         - CPU使用率が低い
-        - 実行が早い
+        - 最速
     - デメリット
         - 一度に多くのリクエストでタイムアウトする
-        - ほかの方法に比べて操作が多い
+        - AssitantSeikaを操作する必要がある
 
 ## 使用ライブラリ
 

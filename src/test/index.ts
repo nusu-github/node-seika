@@ -44,7 +44,7 @@ const test = async (client: Wcfclient | Seikasay2 | Http) => {
 };
 
 const wcfclient_startTime = performance.now();
-const wcfclient = new Wcfclient("./AssistantSeika/WCFClient/WCFClient.dll");
+const wcfclient = new Wcfclient();
 await test(wcfclient);
 const wcfclient_endTime = performance.now();
 

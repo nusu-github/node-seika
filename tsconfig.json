@@ -3,11 +3,12 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "module": "esnext",
     "outDir": "./dist",
     "resolveJsonModule": true,
     "sourceMap": true,
     "noImplicitAny": true
   },
-  "include": ["src/**/*"]
+  "include": [
+    "src/**/*"
+  ]
 }

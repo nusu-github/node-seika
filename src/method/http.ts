@@ -2,10 +2,11 @@ import fs from "node:fs/promises";
 
 import { Validates } from "../util.js";
 
-// eslint-disable-next-line import/order
-import type { OptionsInit } from "got";
+// eslint-disable-next-line import/no-unresolved
 import got from "got";
 import { z } from "zod";
+
+import type { OptionsInit } from "got";
 
 export default class Http {
   private readonly url;
@@ -24,6 +25,39 @@ export default class Http {
 
   /*
    * ~~~ private ~~~
+   */
+
+  private param_parser(data: unknown) {
+    const parameter_list = new Map<string, Map<string, Map<string, number>>>();
+    for (const [type, parameters] of Object.entries(
+      this.validates.GetDefaultParams2_http.parse(data)
+    )) {
+      for (const [name, value] of Object.entries(parameters)) {
+        const a = parameter_list.get(type);
+        const b = new Map<string, number>(Object.entries(value));
+        if (a !== undefined) {
+          a.set(name, b);
+          parameter_list.set(type, a);
+        } else {
+          parameter_list.set(type, new Map([[name, b]]));
+        }
+      }
+    }
+
+    return parameter_list;
+  }
+
+  private gen_option(): OptionsInit {
+    return {
+      username: this.id,
+      password: this.password,
+      resolveBodyOnly: true,
+      responseType: "json",
+    };
+  }
+
+  /*
+   * ~~~ public ~~~
    */
 
   public async Version() {
@@ -47,10 +81,6 @@ export default class Http {
     }
     return avator_list;
   }
-
-  /*
-   * ~~~ public ~~~
-   */
 
   public async AvatorList2() {
     const avator_list = new Map<number, Map<string, string>>();
@@ -170,35 +200,5 @@ export default class Http {
 
     if (!Buffer.isBuffer(data)) throw new Error("Invalid response");
     return -1;
-  }
-
-  private param_parser(data: unknown) {
-    const parameter_list = new Map<string, Map<string, Map<string, number>>>();
-    for (const [type, parameters] of Object.entries(
-      this.validates.GetDefaultParams2_http.parse(data)
-    )) {
-      for (const [name, value] of Object.entries(parameters)) {
-        const a = parameter_list.get(type);
-        const b = new Map<string, number>(Object.entries(value));
-        // eslint-disable-next-line eqeqeq
-        if (a != undefined) {
-          a.set(name, b);
-          parameter_list.set(type, a);
-        } else {
-          parameter_list.set(type, new Map([[name, b]]));
-        }
-      }
-    }
-
-    return parameter_list;
-  }
-
-  private gen_option(): OptionsInit {
-    return {
-      username: this.id,
-      password: this.password,
-      resolveBodyOnly: true,
-      responseType: "json",
-    };
   }
 }

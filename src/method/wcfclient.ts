@@ -19,34 +19,24 @@ export default class Wcfclient {
     "utf8"
   );
 
-  private readonly dll_path;
-  private readonly func_list;
   private readonly validates = new Validates();
 
-  constructor(dll_path: string) {
-    if (
-      !z.literal("WCFClient.dll").safeParse(path.basename(dll_path)).success
-    ) {
-      throw new Error("[バリデーション エラー] パスが不正です");
-    }
+  private readonly echo_seika = promisify(
+    edge.func({
+      source: this.csharp_code,
+      methodName: "Main",
+      references: [
+        "System.Runtime.Serialization.dll",
+        "System.Xml.dll",
+        "System.ServiceModel.dll",
+      ],
+    })
+  );
 
-    this.dll_path = dll_path;
+  private api_entry!: (method: string, Arguments: unknown) => Promise<unknown>;
 
-    /*
-     *  C#コンパイル
-     */
-    this.func_list = {
-      Version: this.gen_func("Version"),
-      ProductScan: this.gen_func("ProductScan"),
-      BootHttpService: this.gen_func("BootHttpService"),
-      AvatorList: this.gen_func("AvatorList"),
-      AvatorList2: this.gen_func("AvatorList2"),
-      AvatorListDetail2: this.gen_func("AvatorListDetail2"),
-      GetDefaultParams2: this.gen_func("GetDefaultParams2"),
-      GetCurrentParams2: this.gen_func("GetCurrentParams2"),
-      Talk: this.gen_func("Talk"),
-      TalkAsync: this.gen_func("TalkAsync"),
-    };
+  constructor() {
+    this.gen_func();
   }
 
   /*
@@ -70,7 +60,7 @@ export default class Wcfclient {
       )
     ) {
       throw new Error(
-        "[エラー] 製品スキャンが行われてないか、その他のエラーがWCFClient.dllで発生しました。"
+        "[エラー] 製品スキャンが行われてないか、その他のエラーが発生しました。"
       );
     }
 
@@ -81,28 +71,34 @@ export default class Wcfclient {
     throw new Error("[エラー] 不明なエラーが発生しました");
   }
 
-  public async Version() {
-    const data = await this.func_list
-      .Version("")
-      .catch((error) => Wcfclient.error_handing(error));
-    return this.validates.Version.parse(data);
+  private gen_func() {
+    this.api_entry = async (method: string, Arguments: unknown) => {
+      return await this.echo_seika({ method, args: Arguments });
+    };
   }
 
   /*
    * ~~~ public ~~~
    */
 
+  public async Version() {
+    const data = await this.api_entry("Version", "").catch((error) =>
+      Wcfclient.error_handing(error)
+    );
+    return this.validates.Version.parse(data);
+  }
+
   public async ProductScan() {
-    const data = await this.func_list
-      .ProductScan("")
-      .catch((error) => Wcfclient.error_handing(error));
+    const data = await this.api_entry("ProductScan", "").catch((error) =>
+      Wcfclient.error_handing(error)
+    );
     return this.validates.ProductScan.parse(data);
   }
 
   public async BootHttpService() {
-    const data = await this.func_list
-      .BootHttpService("")
-      .catch((error) => Wcfclient.error_handing(error));
+    const data = await this.api_entry("BootHttpService", "").catch((error) =>
+      Wcfclient.error_handing(error)
+    );
     return this.validates.BootHttpService.parse(data);
   }
 
@@ -110,9 +106,9 @@ export default class Wcfclient {
     const data = z
       .string()
       .parse(
-        await this.func_list
-          .AvatorList("")
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("AvatorList", "").catch((error) =>
+          Wcfclient.error_handing(error)
+        )
       );
     return this.validates.AvatorList.transform(
       (a) => new Map(a.map(({ Key, Value }) => [Key, Value]))
@@ -123,9 +119,9 @@ export default class Wcfclient {
     const data = z
       .string()
       .parse(
-        await this.func_list
-          .AvatorList2("")
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("AvatorList2", "").catch((error) =>
+          Wcfclient.error_handing(error)
+        )
       );
     const object = this.validates.AvatorList2.parse(JSON.parse(data));
     return new Map(
@@ -137,9 +133,9 @@ export default class Wcfclient {
     const data = z
       .string()
       .parse(
-        await this.func_list
-          .AvatorListDetail2("")
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("AvatorListDetail2", "").catch((error) =>
+          Wcfclient.error_handing(error)
+        )
       );
     const object = this.validates.AvatorListDetail2.parse(JSON.parse(data));
     return new Map(
@@ -151,9 +147,9 @@ export default class Wcfclient {
     const data = z
       .string()
       .parse(
-        await this.func_list
-          .GetDefaultParams2(cid)
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("GetDefaultParams2", { cid }).catch((error) =>
+          Wcfclient.error_handing(error)
+        )
       );
     const object = this.validates.GetDefaultParams2.parse(JSON.parse(data));
     return new Map(
@@ -173,9 +169,9 @@ export default class Wcfclient {
     const data = z
       .string()
       .parse(
-        await this.func_list
-          .GetCurrentParams2(cid)
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("GetCurrentParams2", { cid }).catch((error) =>
+          Wcfclient.error_handing(error)
+        )
       );
     const object = this.validates.GetCurrentParams2.parse(JSON.parse(data));
     return new Map(
@@ -203,15 +199,13 @@ export default class Wcfclient {
     const { filepath = "", effects = [], emotions = [] } = option;
     return z.number().parse(
       Number(
-        await this.func_list
-          .Talk({
-            cid,
-            talktext,
-            filepath,
-            effects,
-            emotions,
-          })
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("Talk", {
+          cid,
+          talktext,
+          filepath,
+          effects,
+          emotions,
+        }).catch((error) => Wcfclient.error_handing(error))
       )
     );
   }
@@ -227,29 +221,13 @@ export default class Wcfclient {
     const { effects = [], emotions = [] } = option;
     return z.number().parse(
       Number(
-        await this.func_list
-          .TalkAsync({
-            cid,
-            talktext,
-            effects,
-            emotions,
-          })
-          .catch((error) => Wcfclient.error_handing(error))
+        await this.api_entry("TalkAsync", {
+          cid,
+          talktext,
+          effects,
+          emotions,
+        }).catch((error) => Wcfclient.error_handing(error))
       )
-    );
-  }
-
-  private gen_func(methodName: string) {
-    return promisify(
-      edge.func({
-        source: this.csharp_code,
-        methodName,
-        references: [
-          this.dll_path,
-          "System.Runtime.Serialization.dll",
-          "System.Xml.dll",
-        ],
-      })
     );
   }
 }

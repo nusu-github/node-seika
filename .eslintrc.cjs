@@ -1,9 +1,17 @@
-{
-  "env": {
-    "node": true,
-    "es6": true
+module.exports = {
+  root: true,
+  env: {
+    node: true,
+    es6: true,
   },
-  "extends": [
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    ecmaVersion: "latest",
+    tsconfigRootDir: __dirname,
+    project: ["./tsconfig.json"],
+  },
+  plugins: ["import", "@typescript-eslint", "unicorn"],
+  extends: [
     "standard-with-typescript",
     "plugin:import/recommended",
     "plugin:import/typescript",
@@ -11,32 +19,22 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:@typescript-eslint/strict",
     "plugin:unicorn/all",
-    "prettier"
+    "prettier",
   ],
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "tsconfigRootDir": "./",
-    "project": "./tsconfig.json",
-    "sourceType": "module"
-  },
-  "plugins": [
-    "@typescript-eslint",
-    "unicorn"
-  ],
-  "rules": {
+  rules: {
+    "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/require-array-sort-compare": "off",
     "unicorn/filename-case": [
       "error",
       {
-        "case": "snakeCase"
-      }
+        case: "snakeCase",
+      },
     ],
     "import/order": [
       "error",
       {
-        "groups": [
+        groups: [
           "builtin",
           "index",
           "sibling",
@@ -44,17 +42,17 @@
           "internal",
           "external",
           "object",
-          "type"
+          "type",
         ],
-        "newlines-between": "always"
-      }
-    ]
+        "newlines-between": "always",
+      },
+    ],
+    "import/no-unresolved": [
+      "error",
+      {
+        ignore: [".js"],
+      },
+    ],
   },
-  "settings": {
-    "import/resolver": {
-      "typescript": true,
-      "node": true
-    }
-  },
-  "root": true
-}
+  ignorePatterns: [".eslintrc.*", "node_modules", "dist"],
+};

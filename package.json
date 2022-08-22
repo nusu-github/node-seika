@@ -1,26 +1,35 @@
 {
   "name": "node-seika",
+  "version": "0.3.0",
   "description": "",
-  "version": "1.0.0",
+  "keywords": ["wrapper"],
+  "license": "Apache-2.0",
   "author": "",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "test": "node ./dist/test.js"
+  },
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "edge-js": "^18.4.0",
     "execa": "^6.1.0",
-    "got": "^12.3.0",
+    "got": "^12.3.1",
     "iconv-lite": "^0.6.3",
-    "zod": "^3.17.10"
+    "zod": "^3.18.0"
   },
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "1.0.3",
-    "@types/node": "18.6.3",
-    "@typescript-eslint/eslint-plugin": "5.32.0",
-    "@typescript-eslint/parser": "5.32.0",
-    "eslint": "8.21.0",
+    "@types/node": "18.7.9",
+    "@typescript-eslint/eslint-plugin": "5.33.1",
+    "@typescript-eslint/parser": "5.33.1",
+    "eslint": "8.22.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-standard-with-typescript": "^22.0.0",
     "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-n": "^15.2.4",
+    "eslint-plugin-n": "^15.2.5",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-unicorn": "^43.0.2",
     "prettier": "2.7.1",
@@ -28,18 +37,5 @@
   },
   "engines": {
     "node": ">=16.0.0"
-  },
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "keywords": [],
-  "license": "Apache-2.0",
-  "scripts": {
-    "build": "tsc",
-    "test": "node ./dist/test.js"
-  },
-  "type": "module"
+  }
 }

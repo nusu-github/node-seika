@@ -12,10 +12,9 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # Dependency directories
 node_modules/
 
-./dist/*
-
-/tmp/
 /.idea/*
+
+/.dist/*
 
 # 警告 理由がない限り 「ここから」で始まり、「ここまで」で終わる行は削除・無効化・変更しないでください。
 # ここから

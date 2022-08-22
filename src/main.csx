@@ -36,18 +36,8 @@ public class Startup
 
     public async Task<object> Main(dynamic input)
     {
-        string method = "";
-        dynamic args = "";
-        dynamic result;
-
-        if (input.method != null)
-        {
-            method = (string)input.method;
-        }
-        if (input.args != null)
-        {
-            args = (dynamic)input.args;
-        }
+        string method = (string)input.method;
+        dynamic args = (dynamic)input.args;
 
         if (Channel == null)
         {
@@ -58,8 +48,7 @@ public class Startup
         {
             case "Version":
                 {
-                    result = api.Verson();
-                    return result;
+                    return api.Verson(); ;
                 }
             case "ProductScan":
                 {
@@ -73,38 +62,38 @@ public class Startup
                 }
             case "AvatorList":
                 {
-                    result = await ToJson(api.AvatorList());
-                    return result;
+                    return await ToJson(api.AvatorList());
                 }
             case "AvatorList2":
                 {
-                    result = await ToJson(api.AvatorList2());
-                    return result;
+                    return await ToJson(api.AvatorList2());
                 }
             case "AvatorListDetail2":
                 {
-                    result = await ToJson(api.AvatorListDetail2());
-                    return result;
+                    return await ToJson(api.AvatorListDetail2());
                 }
             case "GetDefaultParams2":
                 {
                     var cid = (int)args.cid;
-                    result = await ToJson(api.GetDefaultParams2(cid));
-                    return result;
+                    return await ToJson(api.GetDefaultParams2(cid));
                 }
             case "GetCurrentParams2":
                 {
                     var cid = (int)args.cid;
-                    result = await ToJson(api.GetCurrentParams2(cid));
-                    return result;
+                    return await ToJson(api.GetCurrentParams2(cid));
                 }
             case "Talk":
                 {
                     int cid = (int)args.cid;
                     List<string> talktext = new List<string>();
-                    string filepath = (string)args.filepath;
+                    string filepath = "";
                     Dictionary<string, decimal> effects = new Dictionary<string, decimal>();
                     Dictionary<string, decimal> emotions = new Dictionary<string, decimal>();
+
+                    if ((string)args.filepath != "")
+                    {
+                        filepath = Path.GetFullPath((string)args.filepath);
+                    }
 
                     try
                     {

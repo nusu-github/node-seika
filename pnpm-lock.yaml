@@ -5,7 +5,7 @@ specifiers:
   '@types/node': 18.7.9
   '@typescript-eslint/eslint-plugin': 5.33.1
   '@typescript-eslint/parser': 5.33.1
-  edge-js: ^18.4.0
+  edge-js: ^19.0.0
   eslint: 8.22.0
   eslint-config-prettier: 8.5.0
   eslint-config-standard-with-typescript: 22.0.0
@@ -21,7 +21,7 @@ specifiers:
   zod: ^3.18.0
 
 dependencies:
-  edge-js: 18.4.0
+  edge-js: 19.3.0
   execa: 6.1.0
   got: 12.3.1
   iconv-lite: 0.6.3
@@ -599,13 +599,13 @@ packages:
     requiresBuild: true
     dev: false
 
-  /edge-js/18.4.0:
-    resolution: {integrity: sha512-oAwqae0wkiwlO7/gbrkKOavJoXOJ4b7zzonOXc5QTIMhCpIioA2si9eIjwgKD9oDcAjHj3oBabtbFVLgFQ4wDQ==}
+  /edge-js/19.3.0:
+    resolution: {integrity: sha512-wp01bWIhGDH0+cduOEToJxbJBaklGe7pRlIPdEKaaeIn/8QdN3OyRGFMM+Gk/zKTUrFCK+nlu+qTKuOQnIyOVg==}
     engines: {node: '>= 6'}
     requiresBuild: true
     dependencies:
       edge-cs: 1.2.1
-      nan: 2.16.0
+      nan: 2.17.0
     dev: false
 
   /end-of-stream/1.4.4:
@@ -1587,8 +1587,8 @@ packages:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
     dev: true
 
-  /nan/2.16.0:
-    resolution: {integrity: sha512-UdAqHyFngu7TfQKsCBgAA6pWDkT8MAO7d0jyOecVhN5354xbLqdn8mV9Tat9gepAupm0bt2DbeaSC8vS52MuFA==}
+  /nan/2.17.0:
+    resolution: {integrity: sha512-2ZTgtl0nJsO0KQCjEpxcIr5D+Yv90plTitZt9JBfQvVJDS5seMl3FOvsh3+9CoYWXf/1l5OaZzzF6nDm4cagaQ==}
     dev: false
 
   /natural-compare/1.4.0:

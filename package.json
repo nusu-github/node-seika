@@ -23,8 +23,8 @@
   "devDependencies": {
     "@tsconfig/node16-strictest-esm": "1.0.3",
     "@types/node": "18.7.9",
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.62.0",
     "eslint": "8.22.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-standard-with-typescript": "22.0.0",

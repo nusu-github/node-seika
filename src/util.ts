@@ -24,21 +24,21 @@ export class Validates {
   public readonly BootHttpService = z.boolean();
 
   public readonly AvatorList = z.array(
-    z.object({ Key: this.cid, Value: z.string().min(1) })
+    z.object({ Key: this.cid, Value: z.string().min(1) }),
   );
 
   public readonly AvatorList2 = z.array(
     z.object({
       Key: this.cid,
       Value: z.array(z.object({ Key: z.string(), Value: z.string() })),
-    })
+    }),
   );
 
   public readonly AvatorListDetail2 = z.array(
     z.object({
       Key: this.cid,
       Value: z.array(z.object({ Key: z.string(), Value: z.string() })),
-    })
+    }),
   );
 
   public readonly AvatorListDetail2_http = z.array(
@@ -48,7 +48,7 @@ export class Validates {
       name: z.string(),
       platform: z.string(),
       prod: z.string(),
-    })
+    }),
   );
 
   public readonly GetDefaultParams2 = z.array(
@@ -59,7 +59,7 @@ export class Validates {
           z.object({
             Key: this.effect_list,
             Value: z.array(z.object({ Key: z.string(), Value: z.number() })),
-          })
+          }),
         ),
       }),
       z.object({
@@ -68,10 +68,10 @@ export class Validates {
           z.object({
             Key: z.string(),
             Value: z.array(z.object({ Key: z.string(), Value: z.number() })),
-          })
+          }),
         ),
       }),
-    ])
+    ]),
   );
 
   public readonly GetDefaultParams2_http = z.object({
@@ -82,7 +82,7 @@ export class Validates {
         min: z.number(),
         max: z.number(),
         step: z.number(),
-      })
+      }),
     ),
     emotion: z.record(
       z.string().min(1),
@@ -91,7 +91,7 @@ export class Validates {
         min: z.number(),
         max: z.number(),
         step: z.number(),
-      })
+      }),
     ),
   });
 

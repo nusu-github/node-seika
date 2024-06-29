@@ -57,7 +57,7 @@ const http_startTime = performance.now();
 const http = new Http(
   "http://localhost:7180/",
   "SeikaServerUser",
-  "SeikaServerPassword"
+  "SeikaServerPassword",
 );
 await test(http);
 const http_endTime = performance.now();
@@ -69,7 +69,7 @@ console.log(
     seikasay2_endTime -
     seikasay2_startTime +
     http_endTime -
-    http_startTime
+    http_startTime,
 );
 console.log("wcfclient", wcfclient_endTime - wcfclient_startTime);
 console.log("seikasay2", seikasay2_endTime - seikasay2_startTime);

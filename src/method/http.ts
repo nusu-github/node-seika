@@ -27,39 +27,6 @@ export default class Http {
    * ~~~ private ~~~
    */
 
-  private param_parser(data: unknown) {
-    const parameter_list = new Map<string, Map<string, Map<string, number>>>();
-    for (const [type, parameters] of Object.entries(
-      this.validates.GetDefaultParams2_http.parse(data)
-    )) {
-      for (const [name, value] of Object.entries(parameters)) {
-        const a = parameter_list.get(type);
-        const b = new Map<string, number>(Object.entries(value));
-        if (a !== undefined) {
-          a.set(name, b);
-          parameter_list.set(type, a);
-        } else {
-          parameter_list.set(type, new Map([[name, b]]));
-        }
-      }
-    }
-
-    return parameter_list;
-  }
-
-  private gen_option(): OptionsInit {
-    return {
-      username: this.id,
-      password: this.password,
-      resolveBodyOnly: true,
-      responseType: "json",
-    };
-  }
-
-  /*
-   * ~~~ public ~~~
-   */
-
   public async Version() {
     const url = new URL("/VERSION", this.url);
     const data = await got.get(url, this.gen_option());
@@ -75,12 +42,16 @@ export default class Http {
       name,
       prod,
     } of this.validates.AvatorListDetail2_http.parse(data).sort((a, b) =>
-      a.cid < b.cid ? -1 : 1
+      a.cid < b.cid ? -1 : 1,
     )) {
       avator_list.set(cid, name.replace(new RegExp(`_${prod}.+`), ""));
     }
     return avator_list;
   }
+
+  /*
+   * ~~~ public ~~~
+   */
 
   public async AvatorList2() {
     const avator_list = new Map<number, Map<string, string>>();
@@ -92,7 +63,7 @@ export default class Http {
       prod,
       platform,
     } of this.validates.AvatorListDetail2_http.parse(data).sort((a, b) =>
-      a.cid < b.cid ? -1 : 1
+      a.cid < b.cid ? -1 : 1,
     )) {
       avator_list.set(
         cid,
@@ -100,7 +71,7 @@ export default class Http {
           ["name", name.replace(new RegExp(`_${prod}.+`), "")],
           ["prod", prod],
           ["platform", platform],
-        ])
+        ]),
       );
     }
     return avator_list;
@@ -117,7 +88,7 @@ export default class Http {
       platform,
       isalias,
     } of this.validates.AvatorListDetail2_http.parse(data).sort((a, b) =>
-      a.cid < b.cid ? -1 : 1
+      a.cid < b.cid ? -1 : 1,
     )) {
       avator_list.set(
         cid,
@@ -126,7 +97,7 @@ export default class Http {
           ["prod", prod],
           ["platform", platform],
           ["isalias", isalias ? "True" : "False"],
-        ])
+        ]),
       );
     }
     return avator_list;
@@ -151,7 +122,7 @@ export default class Http {
       filepath?: string;
       effects?: Array<[string, number]>;
       emotions?: Array<[string, number]>;
-    } = {}
+    } = {},
   ) {
     const { filepath = "", effects = [], emotions = [] } = option;
     const url = (() => {
@@ -183,7 +154,7 @@ export default class Http {
     option: {
       effects?: Array<[string, number]>;
       emotions?: Array<[string, number]>;
-    } = {}
+    } = {},
   ) {
     const { effects = [], emotions = [] } = option;
     const url = new URL(`/PLAYASYNC2/${cid}`, this.url);
@@ -200,5 +171,34 @@ export default class Http {
 
     if (!Buffer.isBuffer(data)) throw new Error("Invalid response");
     return -1;
+  }
+
+  private param_parser(data: unknown) {
+    const parameter_list = new Map<string, Map<string, Map<string, number>>>();
+    for (const [type, parameters] of Object.entries(
+      this.validates.GetDefaultParams2_http.parse(data),
+    )) {
+      for (const [name, value] of Object.entries(parameters)) {
+        const a = parameter_list.get(type);
+        const b = new Map<string, number>(Object.entries(value));
+        if (a === undefined) {
+          parameter_list.set(type, new Map([[name, b]]));
+        } else {
+          a.set(name, b);
+          parameter_list.set(type, a);
+        }
+      }
+    }
+
+    return parameter_list;
+  }
+
+  private gen_option(): OptionsInit {
+    return {
+      username: this.id,
+      password: this.password,
+      resolveBodyOnly: true,
+      responseType: "json",
+    };
   }
 }

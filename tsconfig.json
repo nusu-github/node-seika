@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+  "extends": "@tsconfig/node20",
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,

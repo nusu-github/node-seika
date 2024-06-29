@@ -29,7 +29,7 @@ export default class Seikasay2 {
       .map((a) =>
         a
           .replace(/^(\d{4}) (\S+) +- (\S+)\((64|32)\)$/, "$1/$2/$3/$4")
-          .split("/")
+          .split("/"),
       )
       .sort();
 
@@ -40,7 +40,7 @@ export default class Seikasay2 {
           z.string().min(1),
           z.string().min(1),
           z.union([z.literal("64"), z.literal("32")]),
-        ])
+        ]),
       )
       .parse(avator_list);
   }
@@ -53,9 +53,9 @@ export default class Seikasay2 {
         a
           .replace(
             /^(effect|emotion) +: (\S+) += (-?[\d.]+) \[(.+)]$/,
-            "$1/$2/$3/$4"
+            "$1/$2/$3/$4",
           )
-          .split("/")
+          .split("/"),
       );
 
     for (const [type, name, value, range] of raw_parameter_list) {
@@ -76,14 +76,14 @@ export default class Seikasay2 {
         ["step", z.number().parse(step)],
       ]);
 
-      if (avator_parameters !== undefined) {
-        avator_parameters.set(z.string().parse(name), parameter);
-        parameter_list.set(parameter_type, avator_parameters);
-      } else {
+      if (avator_parameters === undefined) {
         parameter_list.set(
           parameter_type,
-          new Map([[z.string().parse(name), parameter]])
+          new Map([[z.string().parse(name), parameter]]),
         );
+      } else {
+        avator_parameters.set(z.string().parse(name), parameter);
+        parameter_list.set(parameter_type, avator_parameters);
       }
     }
 
@@ -93,7 +93,7 @@ export default class Seikasay2 {
   public async Version() {
     const stdout = await this.gen_func([""]);
     const version_std = Seikasay2.stdout_parser(stdout).find((a) =>
-      a.match(/^seikasay command Version.+?$/)
+      a.match(/^seikasay command Version.+?$/),
     );
     return z
       .string()
@@ -110,7 +110,7 @@ export default class Seikasay2 {
     for (const [cid, name] of raw_avator_list) {
       avator_list.set(
         z.string().transform(Number).parse(cid),
-        z.string().parse(name)
+        z.string().parse(name),
       );
     }
 
@@ -134,7 +134,7 @@ export default class Seikasay2 {
           ["name", z.string().parse(name)],
           ["prod", z.string().parse(production)],
           ["platform", z.string().parse(platform)],
-        ])
+        ]),
       );
     }
 
@@ -156,7 +156,7 @@ export default class Seikasay2 {
           ["prod", z.string().parse(production)],
           ["platform", z.string().parse(platform)],
           ["isalias", "False"],
-        ])
+        ]),
       );
     }
 
@@ -189,7 +189,7 @@ export default class Seikasay2 {
       filepath?: string;
       effects?: Array<[string, number]>;
       emotions?: Array<[string, number]>;
-    } = {}
+    } = {},
   ) {
     const { filepath = "", effects = [], emotions = [] } = option;
     const argument = ["-cid", String(cid)];
@@ -198,7 +198,7 @@ export default class Seikasay2 {
       argument,
       filepath,
       effects,
-      emotions
+      emotions,
     );
   }
 
@@ -208,7 +208,7 @@ export default class Seikasay2 {
     option: {
       effects?: Array<[string, number]>;
       emotions?: Array<[string, number]>;
-    } = {}
+    } = {},
   ) {
     const { effects = [], emotions = [] } = option;
     const argument = ["-cid", String(cid), "-async"];
@@ -220,7 +220,7 @@ export default class Seikasay2 {
     argument: string[],
     filepath: string,
     effects: Array<[string, number]>,
-    emotions: Array<[string, number]>
+    emotions: Array<[string, number]>,
   ) {
     if (filepath !== "") {
       argument.push("-save", filepath);
@@ -259,12 +259,9 @@ export default class Seikasay2 {
 
   private async gen_func(argument: string[]) {
     const { decode } = iconv;
-    const data = await execa(this.exe_path, argument, {
-      // eslint-disable-next-line unicorn/no-null
-      encoding: null,
-    });
-    const stderr = decode(data.stderr, "Windows-31j");
-    const stdout = decode(data.stdout, "Windows-31j");
+    const data = await execa({ encoding: "buffer" })(this.exe_path, argument);
+    const stderr = decode(<Buffer>data.stderr, "Windows-31j");
+    const stdout = decode(<Buffer>data.stdout, "Windows-31j");
     if (stderr !== "") throw new Error(stderr);
     return stdout;
   }

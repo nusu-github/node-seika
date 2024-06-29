@@ -1,42 +1,32 @@
 {
-  "name": "node-seika",
-  "version": "0.3.0",
-  "description": "",
-  "keywords": [
-    "wrapper"
-  ],
-  "license": "Apache-2.0",
-  "author": "",
-  "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "prepare": "npm run build",
-    "test": "node ./dist/test.js"
-  },
-  "dependencies": {
-    "edge-js": "^22.1",
-    "execa": "^9.3",
-    "got": "^14.4",
-    "iconv-lite": "^0.6",
-    "zod": "^3.23"
-  },
-  "devDependencies": {
-    "@tsconfig/node20": "^20.1",
-    "@types/node": "^20.14",
-    "@typescript-eslint/eslint-plugin": "^7.14",
-    "@typescript-eslint/parser": "^7.14",
-    "eslint": "^8.56",
-    "eslint-config-prettier": "^9.1",
-    "eslint-plugin-import": "^2.29",
-    "eslint-plugin-n": "^17.9",
-    "eslint-plugin-promise": "^6.2",
-    "eslint-plugin-unicorn": "^54.0",
-    "prettier": "^3.3",
-    "typescript": "^5.5"
-  },
-  "engines": {
-    "node": ">=18"
-  }
+	"name": "node-seika",
+	"version": "0.3.0",
+	"description": "",
+	"keywords": ["wrapper"],
+	"license": "Apache-2.0",
+	"author": "",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"prepare": "npm run build",
+		"test": "node dist/test/index.js"
+	},
+	"dependencies": {
+		"edge-js": "^22.1",
+		"execa": "^9.3",
+		"got": "^14.4",
+		"iconv-lite": "^0.6",
+		"zod": "^3.23"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"@tsconfig/node20": "^20.1.4",
+		"@types/node": "^20.14.9",
+		"typescript": "^5.5.2"
+	},
+	"engines": {
+		"node": ">=20"
+	}
 }

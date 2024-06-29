@@ -2,11 +2,9 @@ import fs from "node:fs/promises";
 
 import { Validates } from "../util.js";
 
-// eslint-disable-next-line import/no-unresolved
+import type { OptionsInit } from "got";
 import got from "got";
 import { z } from "zod";
-
-import type { OptionsInit } from "got";
 
 export default class Http {
   private readonly url;
@@ -62,9 +60,7 @@ export default class Http {
       name,
       prod,
       platform,
-    } of this.validates.AvatorListDetail2_http.parse(data).sort((a, b) =>
-      a.cid < b.cid ? -1 : 1,
-    )) {
+    } of this.validates.AvatorListDetail2_http.parse(data)) {
       avator_list.set(
         cid,
         new Map([
@@ -87,9 +83,7 @@ export default class Http {
       prod,
       platform,
       isalias,
-    } of this.validates.AvatorListDetail2_http.parse(data).sort((a, b) =>
-      a.cid < b.cid ? -1 : 1,
-    )) {
+    } of this.validates.AvatorListDetail2_http.parse(data)) {
       avator_list.set(
         cid,
         new Map([

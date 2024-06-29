@@ -2,18 +2,20 @@ import { z } from "zod";
 
 export class Validates {
   public readonly effect_list = z.enum([
-    "volume",
-    "speed",
-    "pitch",
-    "prephoneme",
-    "postphoneme",
-    "intonation",
     "alpha",
-    "shortpause",
+    "intonation",
     "longpause",
+    "morphrate",
+    "pitch",
+    "postphoneme",
+    "prephoneme",
+    "shortpause",
+    "speed",
+    "targetspeaker",
+    "volume",
   ]);
 
-  public readonly cid = z.number().min(4);
+  public readonly cid = z.number().min(5);
 
   public readonly Version = z.string();
 

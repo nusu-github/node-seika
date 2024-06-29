@@ -11,31 +11,33 @@ const test = async (client: Wcfclient | Seikasay2 | Http) => {
   console.log(`AssistantSeikaバージョン ${version}`);
 
   const avatar_list = await client.AvatorList();
-  console.log(`話者一覧`);
+  console.log("話者一覧");
   console.table(avatar_list);
 
   const avatar2_list = await client.AvatorList2();
-  console.log(`話者一覧`);
+  console.log("話者一覧");
   console.table(avatar2_list);
 
   const avatar2_detail_list = await client.AvatorListDetail2();
-  console.log(`話者一覧`);
+  console.log("話者一覧");
   console.table(avatar2_detail_list);
 
   for (const [cid] of avatar_list.entries()) {
+    console.log(`cid: ${cid} のデフォルトパラメーター`);
     const parameter = await client.GetDefaultParams2(cid);
-    console.log(`デフォルトパラメーター`);
     console.table(parameter);
   }
 
   for (const [cid] of avatar_list.entries()) {
+    console.log(`cid: ${cid} 現在のパラメーター`);
     const parameter = await client.GetCurrentParams2(cid);
-    console.log(`現在のパラメーター`);
     console.table(parameter);
   }
 
-  for (const [cid, name] of avatar_list.entries()) {
-    const text = "こんにちは、こんばんわ、おはようございます。";
+  // 三つだけ
+  const text = "こんにちは、こんばんわ、おはようございます。";
+  const list = Array.from(avatar_list.entries());
+  for (const [cid, name] of list.slice(0, 3)) {
     await client.Talk(cid, text, {
       filepath: `${temporary_path}/${cid}_${text}.wav`,
     });

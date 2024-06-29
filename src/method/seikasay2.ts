@@ -25,18 +25,17 @@ export default class Seikasay2 {
 
   private static list_parser(stdout: string) {
     const avator_list = Seikasay2.stdout_parser(stdout)
-      .filter((a) => a.match(/^\d{4}.+?$/))
+      .filter((a) => a.match(/^\d{5}.+?$/))
       .map((a) =>
         a
-          .replace(/^(\d{4}) (\S+) +- (\S+)\((64|32)\)$/, "$1/$2/$3/$4")
-          .split("/"),
-      )
-      .sort();
+          .replace(/^(\d{5}?) (.+?)( +- )(\S+)\((64|32)\)$/, "$1;$2;$4;$5")
+          .split(";"),
+      );
 
     return z
       .array(
         z.tuple([
-          z.string().min(4),
+          z.string().min(5),
           z.string().min(1),
           z.string().min(1),
           z.union([z.literal("64"), z.literal("32")]),
@@ -53,9 +52,9 @@ export default class Seikasay2 {
         a
           .replace(
             /^(effect|emotion) +: (\S+) += (-?[\d.]+) \[(.+)]$/,
-            "$1/$2/$3/$4",
+            "$1;$2;$3;$4",
           )
-          .split("/"),
+          .split(";"),
       );
 
     for (const [type, name, value, range] of raw_parameter_list) {

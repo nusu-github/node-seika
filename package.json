@@ -14,7 +14,7 @@
 		"test": "node dist/test/index.js"
 	},
 	"dependencies": {
-		"edge-js": "^22.1",
+		"edge-js": "^23.0.0",
 		"execa": "^9.3",
 		"got": "^14.4",
 		"iconv-lite": "^0.6",
